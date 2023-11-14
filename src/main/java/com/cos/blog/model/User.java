@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -18,6 +17,7 @@ import java.sql.Timestamp;
 @Entity //User 클래스가 MySQL에 테이블이 생성이 된다.
 @DynamicInsert //insert시 null 인 필드를 지원
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id; //auto_increment
