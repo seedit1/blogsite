@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -23,6 +24,7 @@ public class DummyControllerTest {
     //save함수는 id를 전달하지 않ㅇ면 insert  를 해주고
     //save함수는 id를 전달하면 해당 id에 대한 데이터가 있으면 update를 해주고
     //save함수는 id를 전달하면 해당 id에 대한 데이터가 없으면 insert를 한다.
+    @Transactional
     @PutMapping("/dummy/user/{id}")
     public User updateUser(@PathVariable int  id, @RequestBody User requestUser){
         System.out.println("id : " + id);
@@ -34,7 +36,7 @@ public class DummyControllerTest {
         });
         user.setPassword(requestUser.getPassword());
         user.setEmail(requestUser.getEmail());
-        userRepository.save(user);
+       // userRepository.save(user);
         return null;
     }
 
