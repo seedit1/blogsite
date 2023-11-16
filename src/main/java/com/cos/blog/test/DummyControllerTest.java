@@ -4,6 +4,7 @@ import com.cos.blog.model.RollType;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,10 +22,25 @@ public class DummyControllerTest {
     @Autowired // 의존성 주입
     private UserRepository userRepository;
 
+    @PostMapping("/home")
+    public String home(String username, String email){
+        return "home";
+    }
+
+    @DeleteMapping("/dummy/user/{id}")
+    public String delete(@PathVariable int id){
+        try {
+            userRepository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+            return "삭제에 실패하였습니다. 해당 id를 찾을 수없습니다.";
+        }
+        return "삭제되었습니다. : " + id;
+    }
+
     //save함수는 id를 전달하지 않ㅇ면 insert  를 해주고
     //save함수는 id를 전달하면 해당 id에 대한 데이터가 있으면 update를 해주고
     //save함수는 id를 전달하면 해당 id에 대한 데이터가 없으면 insert를 한다.
-    @Transactional
+    @Transactional //save를 사용하지 않아도 업데이트가 된다. (더티 체킹)
     @PutMapping("/dummy/user/{id}")
     public User updateUser(@PathVariable int  id, @RequestBody User requestUser){
         System.out.println("id : " + id);
@@ -32,12 +48,13 @@ public class DummyControllerTest {
         System.out.println("email : " +requestUser.getEmail());
 
         User user = userRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("수정에 실패하였습니다.");
+            return new IllegalArgumentException("수정에 실패하였습니다."); //영속성
         });
+        //더티 체킹 (변경된 데이터 감지해서  데이터베이스의 값을 수정해준다.)
         user.setPassword(requestUser.getPassword());
         user.setEmail(requestUser.getEmail());
        // userRepository.save(user);
-        return null;
+        return  user;
     }
 
     @GetMapping("/dummy/users")
