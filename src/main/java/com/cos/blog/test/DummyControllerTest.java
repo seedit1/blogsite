@@ -22,11 +22,6 @@ public class DummyControllerTest {
     @Autowired // 의존성 주입
     private UserRepository userRepository;
 
-    @PostMapping("/home")
-    public String home(String username, String email){
-        return "home";
-    }
-
     @DeleteMapping("/dummy/user/{id}")
     public String delete(@PathVariable int id){
         try {
